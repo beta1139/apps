@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="8bit demake - ファミコン風ゲームデメイク（Rockman8FC, FF7FC）と自作Android/iOSアプリ・開発ツールの作品集">
+    <meta name="theme-color" content="#050505">
+    <title>8bit demake</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container">
+        <a class="navbar-brand" href="#">8bit <span>demake</span></a>
+        <button class="nav-toggle" id="nav-toggle" aria-label="メニュー" aria-expanded="false">☰</button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#windows">Windows</a></li>
+            <li><a href="#android">Android</a></li>
+            <li><a href="#ios">iOS</a></li>
+            <li><a href="#tools">Tools</a></li>
+            <li><a href="mail_form.html">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main>
+    <section class="section" id="windows">
+        <div class="container">
+            <div class="section-head reveal">
+                <h2>Windows Apps</h2>
+            </div>
+
+            <div class="games">
+                <article class="game reveal" id="R8">
+                    <div class="game-intro">
+                        <h3>Rockman8FC</h3>
+                    </div>
+                    <div class="game-layout">
+                        <div>
+                            <div class="screen-stage">
+                                <div class="game-carousel" data-delay="5000">
+                                    <img src="img/R8FCtitle.bmp" width="256" height="240" alt="Rockman8FC タイトル" class="is-active">
+                                    <img src="img/R8Sel.bmp" width="256" height="240" alt="Rockman8FC セレクト">
+                                    <img src="img/R8frost.png" width="256" height="240" alt="Rockman8FC フロストマン">
+                                    <img src="img/R8S.bmp" width="256" height="240" alt="Rockman8FC ゲーム画面">
+                                </div>
+                            </div>
+                            <div class="btn-group game-actions" style="margin-top:16px">
+                                <a href="Rockman8FC_v313b.zip" class="btn btn-solid">Download v3.13</a>
+                            </div>
+                        </div>
+                        <div class="editor-stage">
+                            <span class="editor-label">Map Editor</span>
+                            <img src="img/R8MapEdit.bmp" width="256" height="240" alt="Rockman8FC マップエディタ">
+                            <div class="btn-group">
+                                <a href="R8FC_MapEditor_v130.zip" class="btn btn-outline">Map Editor v1.30</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/6qbDLb4ttOM" title="Rockman8FC gameplay" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                </article>
+
+                <article class="game reveal" id="FF7">
+                    <div class="game-intro">
+                        <h3>FF7FC</h3>
+                    </div>
+                    <div class="game-layout">
+                        <div>
+                            <div class="screen-stage">
+                                <div class="game-carousel" data-delay="5000" data-start-delay="2500">
+                                    <img src="img/FF7FCtitle.bmp" width="256" height="240" alt="FF7FC タイトル" class="is-active">
+                                    <img src="img/F7title2.bmp" width="256" height="240" alt="FF7FC タイトル2">
+                                    <img src="img/F7btl.bmp" width="256" height="240" alt="FF7FC バトル">
+                                    <img src="img/F7x.bmp" width="274" height="240" alt="FF7FC 画面">
+                                    <img src="img/F7z.bmp" width="256" height="240" alt="FF7FC 画面2">
+                                </div>
+                            </div>
+                            <div class="btn-group game-actions" style="margin-top:16px">
+                                <a href="https://github.com/beta1139/ff7fc-develop/" class="btn btn-solid">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="editor-stage">
+                            <span class="editor-label">Map Editor</span>
+                            <img src="img/FF7MapEdit.bmp" width="256" height="240" alt="FF7FC マップエディタ">
+                        </div>
+                    </div>
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/PDfmCi4DXQ8" title="FF7FC gameplay" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="android">
+        <div class="container">
+            <div class="section-head reveal">
+                <h2>Android Apps</h2>
+            </div>
+            <div class="app-gallery reveal">
+                <a class="app-item" href="https://air-parcel.web.app/">
+                    <div class="app-thumb"><img src="img/airparcel.png" width="230" height="512" alt="Air Parcel" loading="lazy"></div>
+                    <h4>Air Parcel</h4><span class="meta">公式サイト</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=com.beta1139.kotnes">
+                    <div class="app-thumb"><img src="img/kotnes.webp" width="256" height="455" alt="KotNES" loading="lazy"></div>
+                    <h4>KotNES</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.beta1139.peekhunter">
+                    <div class="app-thumb"><img src="img/peekhunter.png" width="256" height="455" alt="ピークハンター" loading="lazy"></div>
+                    <h4>ピークハンター</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.beta1139.gpslogger">
+                    <div class="app-thumb"><img src="img/gpslogger.png" width="256" height="455" alt="3D Gpx logger" loading="lazy"></div>
+                    <h4>3D Gpx logger</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.beta1139.movie_cutter">
+                    <div class="app-thumb"><img src="img/videocutter.png" width="256" height="455" alt="Video Cutter" loading="lazy"></div>
+                    <h4>Video Cutter</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.gamma2278.ikachatdx">
+                    <div class="app-thumb"><img src="img/ikachatdx.png" width="256" height="455" alt="イカチャットDX" loading="lazy"></div>
+                    <h4>イカチャットDX</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.beta1139.motiondetector">
+                    <div class="app-thumb"><img src="img/motion_detector.png" width="256" height="455" alt="Motion Detect Video Camera" loading="lazy"></div>
+                    <h4>Motion Detect Video Camera</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.beta1139.deviceinfo">
+                    <div class="app-thumb"><img src="img/device_info.png" width="256" height="455" alt="Simple Device Info" loading="lazy"></div>
+                    <h4>Simple Device Info</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.beta1139.ocr_radio">
+                    <div class="app-thumb"><img src="img/remix_player2.png" width="256" height="455" alt="Remix Game Music Player" loading="lazy"></div>
+                    <h4>Remix Game Music Player</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.beta1139.splatweaponroulette2">
+                    <div class="app-thumb"><img src="img/splatweaponroulette2_.png" width="256" height="455" alt="Splat Weapon Roulette 2" loading="lazy"></div>
+                    <h4>Splat Weapon Roulette 2</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://firebasestorage.googleapis.com/v0/b/develop-22cfa.appspot.com/o/splatstage2_258.apk?alt=media&token=6c4bd6cb-471c-4fc9-ab16-933ae0997ff8">
+                    <div class="app-thumb"><img src="img/splatstage2_sub.png" width="256" height="455" alt="Splat Stage 2" loading="lazy"></div>
+                    <h4>Splat Stage 2</h4><span class="meta">Download APK</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.beta1139.teratailreader">
+                    <div class="app-thumb"><img src="img/teratail.png" width="256" height="455" alt="テラテイルリーダー" loading="lazy"></div>
+                    <h4>テラテイルリーダー</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.beta1139.pictopuzzle2">
+                    <div class="app-thumb"><img src="img/picTo15puzzle.png" width="256" height="455" alt="PicTo15Puzzle" loading="lazy"></div>
+                    <h4>PicTo15Puzzle</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.beta1139.restaurantsearch">
+                    <div class="app-thumb"><img src="img/restaurant.png" width="256" height="455" alt="レストランサーチ" loading="lazy"></div>
+                    <h4>レストランサーチ</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=develop.example.beta1139.vimmaster">
+                    <div class="app-thumb"><img src="img/vim.png" width="256" height="455" alt="Vim Master" loading="lazy"></div>
+                    <h4>Vim Master</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=com.beta1139.splatweaponroulette">
+                    <div class="app-thumb"><img src="img/swr.png" width="256" height="455" alt="Splat Weapon Roulette" loading="lazy"></div>
+                    <h4>Splat Weapon Roulette</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=androidgames.mk8_customizechecker">
+                    <div class="app-thumb"><img src="img/mk8.png" width="256" height="455" alt="Mk8 Customize Checker" loading="lazy"></div>
+                    <h4>Mk8 Customize Checker</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=androidgames.SpeedSolo">
+                    <div class="app-thumb"><img src="img/ss.png" width="256" height="455" alt="Speed Solo" loading="lazy"></div>
+                    <h4>Speed Solo</h4><span class="meta">Google Play</span>
+                </a>
+                <a class="app-item" href="https://play.google.com/store/apps/details?id=androidgames.touchnumber#?t=W251bGwsMSwxLDIxMiwiYW5kcm9pZGdhbWVzLnRvdWNobnVtYmVyIl0.">
+                    <div class="app-thumb"><img src="img/tn.png" width="256" height="455" alt="Touch Number" loading="lazy"></div>
+                    <h4>Touch Number</h4><span class="meta">Google Play</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="ios">
+        <div class="container">
+            <div class="section-head reveal">
+                <h2>iOS Apps</h2>
+            </div>
+            <div class="app-gallery reveal">
+                <div class="app-item is-static discontinued">
+                    <div class="app-thumb"><img src="img/splatshuffleios.jpg" width="256" height="455" alt="Splat Shuffle" loading="lazy"></div>
+                    <h4>Splat Shuffle</h4><span class="meta">配信終了</span>
+                </div>
+                <div class="app-item is-static discontinued">
+                    <div class="app-thumb"><img src="img/vimMaster_i.png" width="256" height="455" alt="Vim Master iOS" loading="lazy"></div>
+                    <h4>Vim Master</h4><span class="meta">配信終了</span>
+                </div>
+                <div class="app-item is-static discontinued">
+                    <div class="app-thumb"><img src="img/swr_i.png" width="256" height="455" alt="Splat Weapon Roulette iOS" loading="lazy"></div>
+                    <h4>Splat Weapon Roulette</h4><span class="meta">配信終了</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="tools">
+        <div class="container">
+            <div class="section-head reveal">
+                <h2>Tools</h2>
+            </div>
+            <div class="tool-row reveal">
+                <img src="img/ba.bmp" width="256" height="200" alt="BitmapAnalyzer">
+                <div>
+                    <h3>BitmapAnalyzer</h3>
+                    <a href="BitmapAnalyzer.zip" class="btn btn-solid">Download</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <a href="mail_form.html" class="btn btn-outline">Contact</a>
+        <p class="copyright">&copy; 8bit demake</p>
+        <div>
+            <noscript></noscript><!-- FC2カウンター ここから -->
+            <script language="JavaScript" type="text/javascript" src="http://counter1.fc2.com/counter.php?id=3221148"></script>
+            <noscript><img src="http://counter1.fc2.com/counter_img.php?id=3221148" alt=""></noscript>
+            <img src="http://media.fc2.com/counter_img.php?id=50" style="visibility:hidden" alt="" width="0" height="0">
+        </div>
+    </div>
+</footer>
+
+<button class="back-to-top" id="back-to-top" aria-label="トップへ戻る">↑</button>
+<script src="js/main.js"></script>
+</body>
+</html>
