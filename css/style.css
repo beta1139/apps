@@ -513,6 +513,14 @@ a { color: inherit; }
     color: var(--ink-soft);
 }
 
+.legal-doc a {
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.legal-doc a:hover { text-decoration: underline; }
+
 .legal-doc ol {
     padding-left: 1.35em;
 }
