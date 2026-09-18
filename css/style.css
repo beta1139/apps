@@ -223,10 +223,9 @@ a { color: inherit; }
 
 .game-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    grid-template-columns: minmax(0, 360px) minmax(0, 330px);
     gap: 24px;
     align-items: start;
-    max-width: 800px;
 }
 
 .screen-stage,
@@ -293,7 +292,7 @@ a { color: inherit; }
 .video-frame {
     position: relative;
     width: 100%;
-    max-width: 800px;
+    max-width: 640px;
     aspect-ratio: 16 / 9;
     border-radius: var(--radius);
     overflow: hidden;
