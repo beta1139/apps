@@ -341,7 +341,13 @@ a { color: inherit; }
 }
 
 .app-thumb.is-iphone {
-    aspect-ratio: 471 / 1024;
+    aspect-ratio: auto;
+}
+
+.app-thumb.is-iphone img {
+    height: auto;
+    object-fit: contain;
+    object-position: center;
 }
 
 .app-thumb img {
