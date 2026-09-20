@@ -384,27 +384,6 @@ a { color: inherit; }
     color: var(--muted);
 }
 
-/* ── Web apps ── */
-.web-card {
-    display: grid;
-    gap: 12px;
-    max-width: 640px;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.25s ease;
-}
-
-.web-card:hover { transform: translateY(-4px); }
-
-.app-thumb.is-web {
-    aspect-ratio: 16 / 9;
-}
-
-.app-thumb.is-web img {
-    object-fit: cover;
-    object-position: top center;
-}
-
 /* ── Tools ── */
 .tool-row {
     display: grid;
