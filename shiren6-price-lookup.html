@@ -234,12 +234,22 @@
 
     <div class="callout info">
       <div class="title">照合ルール</div>
-      <div class="body">選んだ価格が買値・売値のどちらかに一致すればヒット。祝福は価格×2、呪いは×0.87（切り捨て）。壺は容量ごと買値+100／売値+40、杖は回数ごと同様。</div>
+      <div class="body">種別だけで一覧、価格だけで逆引き、両方なら AND。価格は買値・売値のどちらかに一致すればヒット（祝福×2、呪い×0.87切り捨て、壺・杖は容量/回数ステップ込み）。</div>
     </div>
 
     <div class="panel">
-      <h2 style="margin-bottom:12px">価格を選択</h2>
+      <h2 style="margin-bottom:12px">条件を選択</h2>
       <div class="fields">
+        <label>種別
+          <select id="category">
+            <option value="">種別を選択</option>
+            <option value="腕輪">腕輪</option>
+            <option value="草">草</option>
+            <option value="巻物">巻物</option>
+            <option value="壺">壺</option>
+            <option value="杖">杖</option>
+          </select>
+        </label>
         <label>価格
           <select id="price"></select>
         </label>
@@ -262,8 +272,8 @@
 
     <div id="results">
       <div class="callout neutral">
-        <div class="title">価格を選択してください</div>
-        <div class="body">価格を選ぶと、買値または売値に一致するアイテムが一覧表示されます。</div>
+        <div class="title">条件を選択してください</div>
+        <div class="body">種別または価格（あるいは両方）を選ぶと、一致するアイテムが一覧表示されます。</div>
       </div>
     </div>
 
@@ -456,12 +466,41 @@
       .sort(function (a, b) { return a - b; });
   }
 
-  function findHits(priceQ) {
+  function sortHits(hits) {
+    hits.sort(function (a, b) {
+      if (a.item.category !== b.item.category) {
+        return a.item.category.localeCompare(b.item.category, "ja");
+      }
+      if (a.item.buy !== b.item.buy) return a.item.buy - b.item.buy;
+      if (a.extra !== b.extra) return a.extra - b.extra;
+      return a.item.name.localeCompare(b.item.name, "ja");
+    });
+    return hits;
+  }
+
+  function listCategoryItems(categoryQ) {
+    var hits = [];
+    for (var i = 0; i < ITEMS.length; i++) {
+      var item = ITEMS[i];
+      if (item.category !== categoryQ) continue;
+      hits.push({
+        item: item,
+        modifier: "通常",
+        extra: 0,
+        matchBuy: item.buy,
+        matchSell: item.sell
+      });
+    }
+    return sortHits(hits);
+  }
+
+  function findHits(priceQ, categoryQ) {
     if (priceQ === null) return [];
     var hits = [];
     var mods = ["通常", "祝福", "呪い"];
     for (var i = 0; i < ITEMS.length; i++) {
       var item = ITEMS[i];
+      if (categoryQ && item.category !== categoryQ) continue;
       var isStepped = item.category === "壺" || item.category === "杖";
       var extras = isStepped
         ? Array.from({ length: MAX_EXTRA + 1 }, function (_, n) { return n; })
@@ -480,15 +519,7 @@
         }
       }
     }
-    hits.sort(function (a, b) {
-      if (a.item.category !== b.item.category) {
-        return a.item.category.localeCompare(b.item.category, "ja");
-      }
-      if (a.item.buy !== b.item.buy) return a.item.buy - b.item.buy;
-      if (a.extra !== b.extra) return a.extra - b.extra;
-      return a.item.name.localeCompare(b.item.name, "ja");
-    });
-    return hits;
+    return sortHits(hits);
   }
 
   function noteFor(hit) {
@@ -522,6 +553,7 @@
       .replace(/"/g, "&quot;");
   }
 
+  var categoryEl = document.getElementById("category");
   var priceEl = document.getElementById("price");
   var clearBtn = document.getElementById("clearBtn");
   var resultsEl = document.getElementById("results");
@@ -554,8 +586,8 @@
 
   function renderIdle() {
     resultsEl.innerHTML =
-      '<div class="callout neutral"><div class="title">価格を選択してください</div>' +
-      '<div class="body">価格を選ぶと、買値または売値に一致するアイテムが一覧表示されます。</div></div>';
+      '<div class="callout neutral"><div class="title">条件を選択してください</div>' +
+      '<div class="body">種別または価格（あるいは両方）を選ぶと、一致するアイテムが一覧表示されます。</div></div>';
   }
 
   function renderResults(hits, priceQ) {
@@ -567,12 +599,12 @@
       resultsEl.innerHTML =
         head +
         '<div class="callout warn"><div class="title">該当なし</div>' +
-        '<div class="body">選んだ価格に一致するアイテムはありませんでした。祝福・呪い、壺の容量、杖の回数も照合しています。</div></div>';
+        '<div class="body">選んだ条件に一致するアイテムはありませんでした。祝福・呪い、壺の容量、杖の回数も照合しています。</div></div>';
       return;
     }
     var rows = hits.map(function (hit) {
-      var buyCls = "num" + (hit.matchBuy === priceQ ? " match" : "");
-      var sellCls = "num" + (hit.matchSell === priceQ ? " match" : "");
+      var buyCls = "num" + (priceQ !== null && hit.matchBuy === priceQ ? " match" : "");
+      var sellCls = "num" + (priceQ !== null && hit.matchSell === priceQ ? " match" : "");
       return (
         "<tr>" +
         "<td>" + escapeHtml(hit.item.name) + "</td>" +
@@ -598,22 +630,31 @@
   }
 
   function refresh() {
-    var raw = priceEl.value;
-    if (raw === "") {
+    var priceRaw = priceEl.value;
+    var catRaw = categoryEl.value;
+    var priceQ = priceRaw === "" ? null : Number(priceRaw);
+    var categoryQ = catRaw === "" ? null : catRaw;
+
+    if (priceQ === null && categoryQ === null) {
       renderIdle();
       return;
     }
-    var priceQ = Number(raw);
-    renderResults(findHits(priceQ), priceQ);
+    if (priceQ === null) {
+      renderResults(listCategoryItems(categoryQ), null);
+      return;
+    }
+    renderResults(findHits(priceQ, categoryQ), priceQ);
   }
 
   function onClear() {
+    categoryEl.value = "";
     priceEl.value = "";
     refresh();
-    priceEl.focus();
+    categoryEl.focus();
   }
 
   clearBtn.addEventListener("click", onClear);
+  categoryEl.addEventListener("change", refresh);
   priceEl.addEventListener("change", refresh);
 
   fillPriceSelect();
