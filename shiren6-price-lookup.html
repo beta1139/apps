@@ -111,21 +111,24 @@
       font-weight: 600;
       min-width: 160px;
     }
-    input[type="number"],
-    input[type="text"] {
+    select {
       font: inherit;
       padding: 8px 10px;
       border: 1px solid var(--border);
       border-radius: 8px;
-      width: 160px;
+      min-width: 180px;
+      max-width: 240px;
       background: var(--input-bg);
       color: var(--text);
-      caret-color: var(--accent);
+      appearance: auto;
     }
-    input::placeholder { color: #6b7380; }
-    input:focus {
+    select:focus {
       outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
       border-color: var(--accent);
+    }
+    select option {
+      background: var(--surface);
+      color: var(--text);
     }
     .actions { display: flex; gap: 8px; }
     button {
@@ -231,20 +234,19 @@
 
     <div class="callout info">
       <div class="title">照合ルール</div>
-      <div class="body">入力した数値が買値・売値のどちらかに一致すればヒット。祝福は価格×2、呪いは×0.87（切り捨て）。壺は容量ごと買値+100／売値+40、杖は回数ごと同様。</div>
+      <div class="body">選んだ価格が買値・売値のどちらかに一致すればヒット。祝福は価格×2、呪いは×0.87（切り捨て）。壺は容量ごと買値+100／売値+40、杖は回数ごと同様。</div>
     </div>
 
     <div class="panel">
-      <h2 style="margin-bottom:12px">価格を入力</h2>
+      <h2 style="margin-bottom:12px">価格を選択</h2>
       <div class="fields">
         <label>価格
-          <input id="price" type="text" inputmode="numeric" placeholder="例: 1000" autocomplete="off" />
+          <select id="price"></select>
         </label>
         <div class="actions">
           <button type="button" class="btn-ghost" id="clearBtn">クリア</button>
         </div>
       </div>
-      <div class="err" id="err" hidden>数値（整数）を入力してください。</div>
       <div class="pills">
         <span class="pill">通常</span>
         <span class="pill">祝福 ×2</span>
@@ -252,7 +254,7 @@
         <span class="pill">壺 容量</span>
         <span class="pill">杖 回数</span>
         <span class="pill">買値 or 売値</span>
-        <span class="pill">入力すると即座に検索</span>
+        <span class="pill">選ぶと即座に検索</span>
       </div>
     </div>
 
@@ -260,8 +262,8 @@
 
     <div id="results">
       <div class="callout neutral">
-        <div class="title">価格を入力してください</div>
-        <div class="body">価格を入力すると、買値または売値に一致するアイテムが一覧表示されます。</div>
+        <div class="title">価格を選択してください</div>
+        <div class="body">価格を選ぶと、買値または売値に一致するアイテムが一覧表示されます。</div>
       </div>
     </div>
 
@@ -430,11 +432,28 @@
     return price;
   }
 
-  function parsePrice(raw) {
-    var t = String(raw).trim().replace(/[,，]/g, "");
-    if (t === "") return null;
-    if (!/^\d+$/.test(t)) return null;
-    return Number(t);
+  function collectPrices() {
+    var set = {};
+    var mods = ["通常", "祝福", "呪い"];
+    for (var i = 0; i < ITEMS.length; i++) {
+      var item = ITEMS[i];
+      var isStepped = item.category === "壺" || item.category === "杖";
+      var extras = isStepped
+        ? Array.from({ length: MAX_EXTRA + 1 }, function (_, n) { return n; })
+        : [0];
+      for (var e = 0; e < extras.length; e++) {
+        var extra = extras[e];
+        var baseBuy = item.buy + extra * STEP_BUY;
+        var baseSell = item.sell + extra * STEP_SELL;
+        for (var m = 0; m < mods.length; m++) {
+          set[applyModifier(baseBuy, mods[m])] = true;
+          set[applyModifier(baseSell, mods[m])] = true;
+        }
+      }
+    }
+    return Object.keys(set)
+      .map(Number)
+      .sort(function (a, b) { return a - b; });
   }
 
   function findHits(priceQ) {
@@ -505,9 +524,17 @@
 
   var priceEl = document.getElementById("price");
   var clearBtn = document.getElementById("clearBtn");
-  var errEl = document.getElementById("err");
   var resultsEl = document.getElementById("results");
   var statsEl = document.getElementById("stats");
+  var PRICES = collectPrices();
+
+  function fillPriceSelect() {
+    var html = '<option value="">価格を選択</option>';
+    for (var i = 0; i < PRICES.length; i++) {
+      html += '<option value="' + PRICES[i] + '">' + PRICES[i] + "</option>";
+    }
+    priceEl.innerHTML = html;
+  }
 
   function renderStats() {
     var c = categoryCounts();
@@ -527,8 +554,8 @@
 
   function renderIdle() {
     resultsEl.innerHTML =
-      '<div class="callout neutral"><div class="title">価格を入力してください</div>' +
-      '<div class="body">価格を入力すると、買値または売値に一致するアイテムが一覧表示されます。</div></div>';
+      '<div class="callout neutral"><div class="title">価格を選択してください</div>' +
+      '<div class="body">価格を選ぶと、買値または売値に一致するアイテムが一覧表示されます。</div></div>';
   }
 
   function renderResults(hits, priceQ) {
@@ -540,7 +567,7 @@
       resultsEl.innerHTML =
         head +
         '<div class="callout warn"><div class="title">該当なし</div>' +
-        '<div class="body">入力した価格に一致するアイテムはありませんでした。祝福・呪い、壺の容量、杖の回数も照合しています。</div></div>';
+        '<div class="body">選んだ価格に一致するアイテムはありませんでした。祝福・呪い、壺の容量、杖の回数も照合しています。</div></div>';
       return;
     }
     var rows = hits.map(function (hit) {
@@ -571,20 +598,12 @@
   }
 
   function refresh() {
-    var priceQ = parsePrice(priceEl.value);
-    var invalid = priceEl.value.trim() !== "" && priceQ === null;
-    var empty = priceEl.value.trim() === "";
-
-    errEl.hidden = !invalid;
-
-    if (empty) {
+    var raw = priceEl.value;
+    if (raw === "") {
       renderIdle();
       return;
     }
-    if (invalid) {
-      resultsEl.innerHTML = "";
-      return;
-    }
+    var priceQ = Number(raw);
     renderResults(findHits(priceQ), priceQ);
   }
 
@@ -595,8 +614,9 @@
   }
 
   clearBtn.addEventListener("click", onClear);
-  priceEl.addEventListener("input", refresh);
+  priceEl.addEventListener("change", refresh);
 
+  fillPriceSelect();
   renderStats();
   refresh();
 })();
