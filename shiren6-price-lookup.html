@@ -153,6 +153,45 @@
       color: var(--text);
     }
     .btn-ghost:hover:not(:disabled) { background: var(--neutral-bg); }
+    .cat-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    .cat-row .cat-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .cat-toggles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .cat-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .cat-btn:hover {
+      border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+      color: var(--text);
+      background: var(--neutral-bg);
+    }
+    .cat-btn.is-on {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #12161b;
+    }
+    .cat-btn.is-on:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      color: #12161b;
+    }
     .pills {
       display: flex;
       flex-wrap: wrap;
@@ -239,17 +278,18 @@
 
     <div class="panel">
       <h2 style="margin-bottom:12px">条件を選択</h2>
+      <div class="cat-row">
+        <span class="cat-label">種別</span>
+        <div class="cat-toggles" id="categoryToggles" role="group" aria-label="種別">
+          <button type="button" class="cat-btn is-on" data-category="" aria-pressed="true">すべて</button>
+          <button type="button" class="cat-btn" data-category="腕輪" aria-pressed="false">腕輪</button>
+          <button type="button" class="cat-btn" data-category="草" aria-pressed="false">草</button>
+          <button type="button" class="cat-btn" data-category="巻物" aria-pressed="false">巻物</button>
+          <button type="button" class="cat-btn" data-category="壺" aria-pressed="false">壺</button>
+          <button type="button" class="cat-btn" data-category="杖" aria-pressed="false">杖</button>
+        </div>
+      </div>
       <div class="fields">
-        <label>種別
-          <select id="category">
-            <option value="">種別を選択</option>
-            <option value="腕輪">腕輪</option>
-            <option value="草">草</option>
-            <option value="巻物">巻物</option>
-            <option value="壺">壺</option>
-            <option value="杖">杖</option>
-          </select>
-        </label>
         <label>価格
           <select id="price"></select>
         </label>
@@ -553,12 +593,13 @@
       .replace(/"/g, "&quot;");
   }
 
-  var categoryEl = document.getElementById("category");
+  var categoryTogglesEl = document.getElementById("categoryToggles");
   var priceEl = document.getElementById("price");
   var clearBtn = document.getElementById("clearBtn");
   var resultsEl = document.getElementById("results");
   var statsEl = document.getElementById("stats");
   var PRICES = collectPrices();
+  var selectedCategory = null;
 
   function fillPriceSelect() {
     var html = '<option value="">価格を選択</option>';
@@ -566,6 +607,17 @@
       html += '<option value="' + PRICES[i] + '">' + PRICES[i] + "</option>";
     }
     priceEl.innerHTML = html;
+  }
+
+  function syncCategoryButtons() {
+    var buttons = categoryTogglesEl.querySelectorAll(".cat-btn");
+    var current = selectedCategory === null ? "" : selectedCategory;
+    for (var i = 0; i < buttons.length; i++) {
+      var btn = buttons[i];
+      var on = btn.getAttribute("data-category") === current;
+      btn.classList.toggle("is-on", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    }
   }
 
   function renderStats() {
@@ -631,9 +683,8 @@
 
   function refresh() {
     var priceRaw = priceEl.value;
-    var catRaw = categoryEl.value;
     var priceQ = priceRaw === "" ? null : Number(priceRaw);
-    var categoryQ = catRaw === "" ? null : catRaw;
+    var categoryQ = selectedCategory;
 
     if (priceQ === null && categoryQ === null) {
       renderIdle();
@@ -646,18 +697,31 @@
     renderResults(findHits(priceQ, categoryQ), priceQ);
   }
 
+  function onCategoryClick(ev) {
+    var btn = ev.target.closest(".cat-btn");
+    if (!btn || !categoryTogglesEl.contains(btn)) return;
+    var cat = btn.getAttribute("data-category");
+    // すべて → null。種別再タップでもすべてに戻す。
+    if (cat === "" || selectedCategory === cat) selectedCategory = null;
+    else selectedCategory = cat;
+    syncCategoryButtons();
+    refresh();
+  }
+
   function onClear() {
-    categoryEl.value = "";
+    selectedCategory = null;
+    syncCategoryButtons();
     priceEl.value = "";
     refresh();
-    categoryEl.focus();
+    priceEl.focus();
   }
 
   clearBtn.addEventListener("click", onClear);
-  categoryEl.addEventListener("change", refresh);
+  categoryTogglesEl.addEventListener("click", onCategoryClick);
   priceEl.addEventListener("change", refresh);
 
   fillPriceSelect();
+  syncCategoryButtons();
   renderStats();
   refresh();
 })();
