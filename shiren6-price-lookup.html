@@ -19,7 +19,6 @@
       --info-border: #35507a;
       --neutral-bg: #222830;
       --row-alt: #181c22;
-      --pill-bg: #262c35;
       --input-bg: #12161b;
       --th-bg: #232933;
       --err: #e8a090;
@@ -166,8 +165,11 @@
     }
     .cat-toggles {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
     }
     .cat-btn {
       background: transparent;
@@ -191,19 +193,6 @@
       background: var(--accent-hover);
       border-color: var(--accent-hover);
       color: #12161b;
-    }
-    .pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .pill {
-      background: var(--pill-bg);
-      border-radius: 999px;
-      padding: 3px 10px;
-      font-size: 0.75rem;
-      color: var(--muted);
     }
     .err {
       color: var(--err);
@@ -273,7 +262,7 @@
 
     <div class="callout info">
       <div class="title">照合ルール</div>
-      <div class="body">種別だけで一覧、価格だけで逆引き、両方なら AND。価格は買値・売値のどちらかに一致すればヒット（祝福×2、呪い×0.87切り捨て、壺・杖は容量/回数ステップ込み）。</div>
+      <div class="body">種別は All / 腕輪 / 草 / 巻物 / 壺 / 杖（初期は All）。価格は買値・売値のどちらかに一致すればヒット（祝福×2、呪い×0.87切り捨て、壺・杖は容量/回数ステップ込み）。種別と価格を両方選ぶと AND。</div>
     </div>
 
     <div class="panel">
@@ -281,7 +270,7 @@
       <div class="cat-row">
         <span class="cat-label">種別</span>
         <div class="cat-toggles" id="categoryToggles" role="group" aria-label="種別">
-          <button type="button" class="cat-btn is-on" data-category="" aria-pressed="true">すべて</button>
+          <button type="button" class="cat-btn is-on" data-category="" aria-pressed="true">All</button>
           <button type="button" class="cat-btn" data-category="腕輪" aria-pressed="false">腕輪</button>
           <button type="button" class="cat-btn" data-category="草" aria-pressed="false">草</button>
           <button type="button" class="cat-btn" data-category="巻物" aria-pressed="false">巻物</button>
@@ -297,25 +286,11 @@
           <button type="button" class="btn-ghost" id="clearBtn">クリア</button>
         </div>
       </div>
-      <div class="pills">
-        <span class="pill">通常</span>
-        <span class="pill">祝福 ×2</span>
-        <span class="pill">呪い ×0.87</span>
-        <span class="pill">壺 容量</span>
-        <span class="pill">杖 回数</span>
-        <span class="pill">買値 or 売値</span>
-        <span class="pill">選ぶと即座に検索</span>
-      </div>
     </div>
 
     <hr class="sep" />
 
-    <div id="results">
-      <div class="callout neutral">
-        <div class="title">条件を選択してください</div>
-        <div class="body">種別または価格（あるいは両方）を選ぶと、一致するアイテムが一覧表示されます。</div>
-      </div>
-    </div>
+    <div id="results"></div>
 
   </div>
 
@@ -522,7 +497,7 @@
     var hits = [];
     for (var i = 0; i < ITEMS.length; i++) {
       var item = ITEMS[i];
-      if (item.category !== categoryQ) continue;
+      if (categoryQ && item.category !== categoryQ) continue;
       hits.push({
         item: item,
         modifier: "通常",
@@ -636,12 +611,6 @@
     }).join("");
   }
 
-  function renderIdle() {
-    resultsEl.innerHTML =
-      '<div class="callout neutral"><div class="title">条件を選択してください</div>' +
-      '<div class="body">種別または価格（あるいは両方）を選ぶと、一致するアイテムが一覧表示されます。</div></div>';
-  }
-
   function renderResults(hits, priceQ) {
     var head =
       '<div class="result-head"><h2>検索結果</h2><span class="count">' +
@@ -686,14 +655,12 @@
     var priceQ = priceRaw === "" ? null : Number(priceRaw);
     var categoryQ = selectedCategory;
 
-    if (priceQ === null && categoryQ === null) {
-      renderIdle();
-      return;
-    }
+    // All (null) or a category, with no price → base-price listing
     if (priceQ === null) {
       renderResults(listCategoryItems(categoryQ), null);
       return;
     }
+    // price set → match across All or AND with category
     renderResults(findHits(priceQ, categoryQ), priceQ);
   }
 
@@ -701,9 +668,8 @@
     var btn = ev.target.closest(".cat-btn");
     if (!btn || !categoryTogglesEl.contains(btn)) return;
     var cat = btn.getAttribute("data-category");
-    // すべて → null。種別再タップでもすべてに戻す。
-    if (cat === "" || selectedCategory === cat) selectedCategory = null;
-    else selectedCategory = cat;
+    // All → null; picking a category selects it (radio; re-tap keeps it)
+    selectedCategory = cat === "" ? null : cat;
     syncCategoryButtons();
     refresh();
   }
